@@ -1,0 +1,390 @@
+<!doctype html>
+{% load staticfiles %}
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <link rel="icon" type="image/png" href="assets/img/favicon.ico">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+
+    <title>Data Analytics</title>
+
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'/>
+    <meta name="viewport" content="width=device-width"/>
+
+
+    <!-- Bootstrap core CSS     -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet"/>
+
+    <!-- Animation library for notifications   -->
+    <link href="{% static 'css/animate.min.css' %}" rel="stylesheet"/>
+
+    <!--  Light Bootstrap Table core CSS    -->
+    <link href="{% static 'css/light-bootstrap-dashboard.css' %}" rel="stylesheet"/>
+
+
+    <!--  CSS for Demo Purpose, don't include it in your project     -->
+    <link href="{% static 'css/demo.css' %}" rel="stylesheet"/>
+
+
+    <!--     Fonts and icons     -->
+    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="sidebar" data-color="purple" data-image="assets/img/sidebar-5.jpg">
+
+        <!--   you can change the color of the sidebar using: data-color="blue | azure | green | orange | red | purple" -->
+
+
+        <div class="sidebar-wrapper">
+            <div class="logo">
+                <a href="#" class="simple-text">
+                    BORA
+                </a>
+            </div>
+
+            <ul class="nav">
+                <li>
+                    <a href="{% url 'org_view' %}">
+                        <i class="pe-7s-graph"></i>
+                        <p>Organisation Units</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'data_view' %}">
+                        <i class="pe-7s-note2"></i>
+                        <p>Data Elements</p>
+                    </a>
+                </li>
+                <li>
+                    <a href="{% url 'org_map' %}">
+                        <i class="pe-7s-map-marker"></i>
+                        <p>Maps</p>
+                    </a>
+                </li>
+                <li class="active">
+                    <a href="{% url 'graphs' %}">
+                        <i class="pe-7s-bell"></i>
+                        <p>Analytics</p>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="main-panel">
+        <nav class="navbar navbar-default navbar-fixed">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse"
+                            data-target="#navigation-example-2">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">ANALYSIS</a>
+                </div>
+
+            </div>
+        </nav>
+
+        <div class="content">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card card-plain">
+                            <div class="header">
+                                <h4 class="title" style="text-decoration: underline;text-align: center">MEASLES</h4>
+                                <div class="content table-responsive table-full-width">
+
+                                    <canvas id="myChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card card-plain">
+                            <div class="header">
+                                <h4 class="title" style="text-decoration: underline;text-align: center">YELLOW
+                                    FEVER</h4>
+                                <div class="content table-responsive table-full-width">
+
+                                    <canvas id="yellow"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card card-plain">
+                            <div class="header">
+                                <h4 class="title" style="text-decoration: underline;text-align: center">BCG</h4>
+                                <div class="content table-responsive table-full-width">
+
+                                    <canvas id="bcg"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card card-plain">
+                            <div class="header">
+                                <h4 class="title" style="text-decoration: underline;text-align: center">COMBINED LINE GRAPH IMMUNIZATION DATA</h4>
+                                <div class="content table-responsive table-full-width">
+
+                                    <canvas id="comb"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+</div>
+
+
+</body>
+
+<!--   Core JS Files   -->
+<script src="{% static 'js/jquery-1.10.2.js' %}" type="text/javascript"></script>
+
+<script src="{% static 'js/bootstrap.min.js' %}" type="text/javascript"></script>
+
+<!--  Checkbox, Radio & Switch Plugins -->
+<script src="{% static 'js/bootstrap-checkbox-radio-switch.js' %}"></script>
+
+
+<!--  Charts Plugin -->
+<script src="{% static 'js/chartist.min.js' %}"></script>
+
+<!--  Notifications Plugin    -->
+<script src="{% static 'js/bootstrap-notify.js' %}"></script>
+
+<!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
+<script src="{% static 'js/light-bootstrap-dashboard.js' %}"></script>
+
+<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
+<script src="{% static 'js/demo.js' %}"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.bundle.min.js"></script>
+
+<script>
+    var data_url = "/analytics_data";
+    $.getJSON(data_url, function (data) {
+        console.log(data);
+        var ctx = document.getElementById("myChart").getContext('2d');
+        var ctx1 = document.getElementById("yellow").getContext('2d');
+        var ctx2 = document.getElementById("bcg").getContext('2d');
+
+        var data1 = data.YtbsuPPo010[0];
+        var data2 = data.l6byfWFUGaP[0];
+        var data3 = data.s46m5MS0hxu[0];
+
+        setChart(data1, data2, data3);
+        var myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: data.YtbsuPPo010[0].period.sort(),
+
+                datasets: [{
+                    label: data.YtbsuPPo010[0].name,
+                    data: data.YtbsuPPo010[0].value,
+                    backgroundColor: [
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue',
+                        'blue'
+
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        var yellow = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: data.l6byfWFUGaP[0].period.sort(),
+                datasets: [{
+                    label: data.l6byfWFUGaP[0].name,
+                    data: data.l6byfWFUGaP[0].value,
+                    backgroundColor: [
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                        'yellow',
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'blue'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+        var bcg = new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: data.s46m5MS0hxu[0].period.sort(),
+                datasets: [{
+                    label: data.s46m5MS0hxu[0].name,
+                    data: data.s46m5MS0hxu[0].value,
+                    backgroundColor: [
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                        '#66ff00',
+                    ],
+                    borderColor: [
+                        'rgba(255,99,132,1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)'
+                    ],
+                    borderWidth: 1
+
+
+                }]
+            },
+
+
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero: true
+                        }
+                    }]
+                }
+            }
+        });
+    });
+
+    var ctx_1 = document.getElementById("comb").getContext("2d");
+
+    function setChart(data1, data2, data3) {
+        var lineChartData = {
+            labels: data1.period,
+            datasets: [{
+                label: "MEASLES",
+                    borderColor: "blue",
+                backgroundColor: "blue",
+                fill: false,
+                data: data1.value,
+                yAxisID: "y-axis-1",
+            }, {
+                label: "YELLOW FEVER",
+                borderColor: ["yellow"],
+                backgroundColor: ["yellow"],
+                fill: false,
+                data: data2.value,
+                yAxisID: "y-axis-2"
+            }, {
+                label: "BCG",
+                borderColor: ["green"],
+                backgroundColor: ["green"],
+                fill: false,
+                data: data3.value,
+                yAxisID: "y-axis-2"
+            }]
+        };
+        var myLine = Chart.Line(ctx_1, {
+            data: lineChartData,
+            options: {
+                responsive: true,
+                hoverMode: 'index',
+                stacked: false,
+                title: {
+                    display: true,
+                    text: 'COMBINED LINE GRAPH OF IMMUNIZATION DATA'
+                },
+                scales: {
+                    yAxes: [{
+                        type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        position: "left",
+                        id: "y-axis-1",
+                    }, {
+                        type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                        display: true,
+                        position: "right",
+                        id: "y-axis-2",
+
+                        // grid line settings
+                        gridLines: {
+                            drawOnChartArea: false, // only want the grid lines for one axis to show up
+                        },
+                    }],
+                }
+            }
+        });
+    }
+
+</script>
+
+</html>
